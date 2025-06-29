@@ -1,20 +1,41 @@
-// Defining text characters for the empty and full hearts for you to use later.
+// Defining text characters for the empty and full hearts
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
-// Your JavaScript code goes here!
+// Wait for DOM to load
+document.addEventListener("DOMContentLoaded", () => {
+  const hearts = document.querySelectorAll(".like-glyph");
 
+  hearts.forEach(heart => {
+    heart.addEventListener("click", () => {
+      mimicServerCall()
+        .then(() => {
+          if (heart.textContent === EMPTY_HEART) {
+            heart.textContent = FULL_HEART;
+            heart.classList.add("activated-heart");
+          } else {
+            heart.textContent = EMPTY_HEART;
+            heart.classList.remove("activated-heart");
+          }
+        })
+        .catch(error => {
+          const modal = document.getElementById("modal");
+          const message = document.getElementById("modal-message");
 
+          message.textContent = error;
+          modal.classList.remove("hidden");
 
-
-//------------------------------------------------------------------------------
-// Don't change the code below: this function mocks the server response
-//------------------------------------------------------------------------------
-
-function mimicServerCall(url="http://mimicServer.example.com", config={}) {
+          setTimeout(() => {
+            modal.classList.add("hidden");
+          }, 3000);
+        });
+    });
+  });
+});
+function mimicServerCall(url = "http://mimicServer.example.com", config = {}) {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
-      let isRandomFailure = Math.random() < .2
+      let isRandomFailure = Math.random() < 0.2;
       if (isRandomFailure) {
         reject("Random server error. Try again.");
       } else {
